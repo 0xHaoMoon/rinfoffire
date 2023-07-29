@@ -24,12 +24,15 @@ constructor(){}
     if (!this.pickCardAnimation) {
       this.currentCard = this.game.stack.pop() ?? '';
       this.pickCardAnimation = true;
+
+
     
 
 
     setTimeout(() => {
+      this.game.playedCard.push(this.currentCard);
       this.pickCardAnimation = false;
-    }, 2500);
+    }, 1000);
   }
 }
 }
