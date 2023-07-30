@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "ringoffire-affc0": {
+      "hosting": {
+        "rinfoffire": [
+          "ringoffire-affc0"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "ringoffire-affc0"
+  }
+}
