@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Game } from 'src/models/game';
-import {MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, doc, getDocs, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 
@@ -12,32 +12,32 @@ import { Observable } from 'rxjs';
   styleUrls: ['./game.component.scss']
 })
 
-export class GameComponent implements OnInit{
+export class GameComponent implements OnInit {
   pickCardAnimation = false;
   currentCard: string = '';
   game!: Game;
 
   private firestore: Firestore = inject(Firestore);
   games$: Observable<any[]>;
-  
-constructor(public dialog: MatDialog){
-  const aCollection = collection(this.firestore, 'games')
-  this.games$ = collectionData(aCollection);
 
-  //Auslesen
-  this.games$.subscribe((newGame)=>{                      
-    console.log(newGame)
-  })
-}
+  constructor(public dialog: MatDialog) {
+    const aCollection = collection(this.firestore, 'games')
+    this.games$ = collectionData(aCollection);
+
+    //Auslesen
+    this.games$.subscribe((newGame) => {
+      console.log(newGame)
+    })
+  }
   ngOnInit(): void {
     this.newGame();
   }
 
-  newGame(){
+  async newGame() {
     this.game = new Game();
   }
 
-  takeCard(){
+  takeCard() {
     if (!this.pickCardAnimation) {
       this.currentCard = this.game.stack.pop() ?? '';
       this.pickCardAnimation = true;
@@ -45,22 +45,22 @@ constructor(public dialog: MatDialog){
       this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
 
 
-    setTimeout(() => {
-      this.game.playedCard.push(this.currentCard);
-      this.pickCardAnimation = false;
-    }, 1000);
+      setTimeout(() => {
+        this.game.playedCard.push(this.currentCard);
+        this.pickCardAnimation = false;
+      }, 1000);
+    }
   }
-}
 
-openDialog(): void {
-  const dialogRef = this.dialog.open(DialogAddPlayerComponent);
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogAddPlayerComponent);
 
-  dialogRef.afterClosed().subscribe((name: string) => {
-    if(name && name.length >0){
-    this.game.players.push(name);
+    dialogRef.afterClosed().subscribe((name: string) => {
+      if (name && name.length > 0) {
+        this.game.players.push(name);
+      }
+    });
   }
-  });
-}
 
 
 }
