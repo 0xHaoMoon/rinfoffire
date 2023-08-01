@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { Firestore, addDoc, collection, collectionData, doc, getDocs, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class GameComponent implements OnInit {
   private firestore: Firestore = inject(Firestore);
   games$: Observable<any[]>;
 
-  constructor(public dialog: MatDialog) {
+  constructor(private route: ActivatedRoute, public dialog: MatDialog) {
     const aCollection = collection(this.firestore, 'games')
     this.games$ = collectionData(aCollection);
 
@@ -35,7 +36,13 @@ export class GameComponent implements OnInit {
 
   async newGame() {
     this.game = new Game();
+    const docRef = await addDoc(collection(this.firestore, "games"), {
+      game:this.game.toJson()  //so fügt man ein Json hinzu
+    });
   }
+
+
+
 
   takeCard() {
     if (!this.pickCardAnimation) {
