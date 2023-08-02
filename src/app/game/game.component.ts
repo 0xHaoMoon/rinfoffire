@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Game } from 'src/models/game';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
-import { Firestore, addDoc, collection, collectionData, doc, getDocs, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, doc, docData, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
@@ -17,28 +17,37 @@ export class GameComponent implements OnInit {
   pickCardAnimation = false;
   currentCard: string = '';
   game!: Game;
-
-  private firestore: Firestore = inject(Firestore);
-  games$: Observable<any[]>;
+  firestore: Firestore = inject(Firestore);
+  games$: Observable<any> | undefined;
+  gameId: any;
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
-    const aCollection = collection(this.firestore, 'games')
-    this.games$ = collectionData(aCollection);
 
-    //Auslesen
-    this.games$.subscribe((newGame) => {
-      console.log(newGame)
-    })
   }
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    
     this.newGame();
+    this.route.params.subscribe((params)=>{
+      this.gameId = params['id'];
+      const aCollection = doc(this.firestore, 'games', this.gameId)
+      this.games$ = docData(aCollection);
+     this.games$.subscribe((game) => {
+      console.log(game)
+      this.game.currentPlayer = game.currentPlayer;
+      this.game.playedCard = game.playedCard;
+      this.game.players = game.players;
+      this.game.stack = game.stack;
+    })
+    })
+   
+
   }
 
   async newGame() {
     this.game = new Game();
-    const docRef = await addDoc(collection(this.firestore, "games"), {
-      game:this.game.toJson()  //so fügt man ein Json hinzu
-    });
+ //const docRef = await addDoc(collection(this.firestore, "games"), {
+  //game:this.game.toJson()  //so fügt man ein Json hinzu
+   //});
   }
 
 
