@@ -14,40 +14,40 @@ import { ActivatedRoute } from '@angular/router';
 })
 
 export class GameComponent implements OnInit {
-  pickCardAnimation = false;
-  currentCard: string = '';
   game!: Game;
   firestore: Firestore = inject(Firestore);
-  games$: Observable<any> | undefined;
+  games$!: Observable<any>;
+
   gameId: any;
+  pickCardAnimation = false;
+  currentCard: string = '';
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
 
   }
   async ngOnInit(): Promise<void> {
-    
+
     this.newGame();
-    this.route.params.subscribe((params)=>{
+    this.route.params.subscribe((params:any) => {
       this.gameId = params['id'];
-      const aCollection = doc(this.firestore, 'games', this.gameId)
-      this.games$ = docData(aCollection);
-     this.games$.subscribe((game) => {
-      console.log(game)
+      const docRef = doc(this.firestore,'games',this.gameId);
+      this.games$ = docData(docRef)
+      this.games$.subscribe((game) => {
       this.game.currentPlayer = game.currentPlayer;
       this.game.playedCard = game.playedCard;
       this.game.players = game.players;
       this.game.stack = game.stack;
+
+      })
     })
-    })
-   
+
 
   }
 
   async newGame() {
     this.game = new Game();
- //const docRef = await addDoc(collection(this.firestore, "games"), {
-  //game:this.game.toJson()  //so fügt man ein Json hinzu
-   //});
+    //let db = collection(this.firestore,"games");
+    //addDoc(db,this.game.toJson())
   }
 
 
