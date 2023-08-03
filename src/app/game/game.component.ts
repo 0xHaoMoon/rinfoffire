@@ -46,8 +46,7 @@ export class GameComponent implements OnInit {
 
   async newGame() {
     this.game = new Game();
-    //let db = collection(this.firestore,"games");
-    //addDoc(db,this.game.toJson())
+
   }
 
 
