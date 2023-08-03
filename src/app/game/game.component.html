@@ -16,8 +16,8 @@ class="player-position"></app-player>
          src="./../../assets/img/cards/{{card}}.png" alt="">
 
         <!--Current Card animation-->
-         <img (click)="takeCard()" *ngIf="pickCardAnimation" class="pickCard" style="right: 40px"
-         src="./../../assets/img/cards/{{currentCard}}.png" alt="">
+         <img (click)="takeCard()" *ngIf="game.pickCardAnimation" class="pickCard" style="right: 40px"
+         src="./../../assets/img/cards/{{game.currentCard}}.png" alt="">
     </div>
 </div>
 
@@ -25,4 +25,4 @@ class="player-position"></app-player>
     <mat-icon>add</mat-icon>
   </button>
 
-<app-game-info [card]="currentCard" class="mat-card"></app-game-info>
+<app-game-info [card]="game.currentCard" class="mat-card"></app-game-info>

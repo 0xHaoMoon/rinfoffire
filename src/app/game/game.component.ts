@@ -19,8 +19,7 @@ export class GameComponent implements OnInit {
   games$!: Observable<any>;
 
   gameId: any;
-  pickCardAnimation = false;
-  currentCard: string = '';
+
 
   constructor(private route: ActivatedRoute, public dialog: MatDialog) {
 
@@ -37,6 +36,8 @@ export class GameComponent implements OnInit {
       this.game.playedCard = game.playedCard;
       this.game.players = game.players;
       this.game.stack = game.stack;
+      this.game.currentCard = game.currentCard;
+      this.game.pickCardAnimation = game.pickCardAnimation;
 
       })
     })
@@ -53,17 +54,18 @@ export class GameComponent implements OnInit {
 
 
   takeCard() {
-    if (!this.pickCardAnimation) {
-      this.currentCard = this.game.stack.pop() ?? '';
-      this.pickCardAnimation = true;
-      this.saveGame();
+    if (!this.game.pickCardAnimation) {
+      this.game.currentCard = this.game.stack.pop() ?? '';
+      this.game.pickCardAnimation = true;
+
       this.game.currentPlayer++;
       this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
+      this.saveGame();
 
 
       setTimeout(() => {
-        this.game.playedCard.push(this.currentCard);
-        this.pickCardAnimation = false;
+        this.game.playedCard.push(this.game.currentCard);
+        this.game.pickCardAnimation = false;
         this.saveGame();
       }, 1000);
     }
