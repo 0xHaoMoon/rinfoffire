@@ -56,6 +56,7 @@ export class GameComponent implements OnInit {
     if (!this.pickCardAnimation) {
       this.currentCard = this.game.stack.pop() ?? '';
       this.pickCardAnimation = true;
+      this.saveGame();
       this.game.currentPlayer++;
       this.game.currentPlayer = this.game.currentPlayer % this.game.players.length;
 
@@ -63,6 +64,7 @@ export class GameComponent implements OnInit {
       setTimeout(() => {
         this.game.playedCard.push(this.currentCard);
         this.pickCardAnimation = false;
+        this.saveGame();
       }, 1000);
     }
   }
@@ -73,8 +75,14 @@ export class GameComponent implements OnInit {
     dialogRef.afterClosed().subscribe((name: string) => {
       if (name && name.length > 0) {
         this.game.players.push(name);
+        this.saveGame();
       }
     });
+  }
+
+  saveGame(){
+    const docRef = doc(this.firestore,'games',this.gameId);
+    updateDoc(docRef, this.game.toJson());
   }
 
 
